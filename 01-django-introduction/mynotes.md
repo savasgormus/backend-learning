@@ -45,3 +45,48 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home,name="home"),     # 1. parametre url ismi, 2. view adı, 3. ismi
 ]
+
+ikinci bir view oluşturalım:
+
+def page2(request):
+    return HTTPResponse("this is page2")
+
+ve bu view'i urls.py dosyasına ekleyelim:
+
+***
+import students.veiws import page2
+
+urlpatterns = [
+    path('page2/', page2, name='page2')
+]
+***
+
+şimdi ise include yöntemi ile yönlendirme yapacağız. student klasörünün içerisine urls.py dosyası oluşturduk.
+fscohort içerisindeki urls.py dosyasına include'u import ediyoruz:
+
+***
+from django.urls import include
+***
+
+urlpatterns içerisinde ise şu değişikliği yapıyoruz:
+
+***
+urlpatterns = [
+    path('', include('student.urls'))
+]
+***
+örneğin path('student/', include('student.urls')) olarak yazdık: bu durumda
+xxxx/student/ ile gelen her linki students.urls dosyasında belirttiğimiz yerden çekecek : http://127.0.0.1:8000/student/page2/
+
+artık student.views'i tek tek import etmemize gerek kalmadı çünkü yukarıda yaptığımız işlemle student.urls'den url'yi çekecek. özetle ana santralden daha ufak santrale geçtik.
+
+şimdi student içerisindeki urls.py dosyasını düzenleyelim:
+
+--- ***
+from django.urls import path
+from .views import home
+
+urlpatterns = [
+    path('', home)
+]
+***
