@@ -1,0 +1,1 @@
+- python3 -m venv env => ile enviorement'imizi oluşturduk. 
