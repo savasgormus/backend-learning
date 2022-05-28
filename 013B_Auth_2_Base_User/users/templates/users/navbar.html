@@ -23,8 +23,9 @@
         </ul>
 
         <ul class="navbar-nav ml-auto">
-            {% if request.user.is_authenticated %} {% if request.user.is_superuser %}
-
+            {% if request.user.is_authenticated %}
+            
+            {% if request.user.is_superuser %}
             <li class="nav-item active">
                 <a class="nav-link" href="/admin">Admin</a>
             </li>
@@ -32,7 +33,7 @@
 
             <li class="nav-item active">
                 {% comment %} {% url 'logout' %} {% endcomment %}
-                <a class="nav-link" href="">Log Out</a>
+                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
             </li>
             {% else %}
 
