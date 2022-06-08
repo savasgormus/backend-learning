@@ -146,3 +146,5 @@ class Student(models.Model):
         return self.first_name
 
 yazdığımız fonksiyona yukarıdaki __str__ metodunu ekleyerek first_name'leri görürüz.
+
+
