@@ -192,12 +192,27 @@ not: bir resim yüklemek istiyor isek pythonun görüntüleme kütüphanesi Pill
 database'de resim vs depolama olmaz. size path'i verir.
 bu resmi görmek için bazı ayarlamalar yapacağız:
 
-src/settings.py :
-STATIC_URL altına şunu ekliyoruz: MEDIA_URL = '/media/'
+    src/settings.py :
+    STATIC_URL altına şunu ekliyoruz: MEDIA_URL = 'media/'
 
-src/urls.py :
+    src/urls.py :
 
-from django.conf import settings
-from django.conf.urls.static import static
+        from django.conf import settings
+        from django.conf.urls.static import static
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+register_date = models.DateTimeField(auto_now_add=True)  => register olduğu tarih ve saat
+update_date = models.DateTimeField(auto_now=True )  => değişiklik yaptığımızda girilen tarih ve saat
+
+DateField ise sadece tarihi alır.
+auto_now_add giriş için kullanıldı. tarih / saati aldı ve ekledi.
+auto_now ise değişiklik yaptığımız tarih /saati aldı ve güncelledi.
+
+
+
+
+
+02:32 -
+
