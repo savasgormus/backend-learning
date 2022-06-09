@@ -147,4 +147,57 @@ class Student(models.Model):
 
 yazdığımız fonksiyona yukarıdaki __str__ metodunu ekleyerek first_name'leri görürüz.
 
+ya da biraz daha değiştirip fstring içerisine alıp isim soy isim olarak görelim:
 
+    return (f"{self.first_name} {self.last_name}")
+
+djangonun Meta özelliğini ekleyelim ve numaraya göre sıralama işlemi yapalım:
+
+    class Meta:
+        ordering = ["number"]   sıralama şekli
+        verbose_name_plural = "Öğrenciler"  tablonun paneldeki görünen ismi
+
+bu bilgilere django dökümanından ulaşabiliriz:
+https://docs.djangoproject.com/en/4.0/topics/db/models/#meta-options
+
+
+yaptığımız tabloyu sqlite extensionu ile görelim. db.sqlite3 dosyasında fscohort'u tıkladık ve show tables dedik.
+
+--------------------------- Django ORM ve Query sets ------------------------------
+
+- python manage.py shell komutunu girelim. consola şunları yazıyoruz:
+
+- from fscohort.models import Student   database'e tablo girdik
+
+- s1 = Student(first_name="John", last_name="Doe", number=123)   bir obje oluşturduk ve class olarak içini doldurduk.
+
+- s1.save()  database'e bu veriyi girdik
+
+- s2 = Student.objects.create(first_name="joe", last_name="Demaio", number=123)
+bu şekilde ise save() metodunu kullanmadan direkt database'e bu veriyi girebiliriz.
+
+https://docs.djangoproject.com/en/4.0/ref/models/querysets/
+
+
+----------------- Field options--------------------------------
+
+fscohort/models.py
+oluşturduğumuz tabloya farklı özellikler ekleyelim
+not: burada yaptığımız işlemler tabloda değişikliğe yol açacağı için istediğimiz eklemeleri yaptıktan sonra konsola makemigrations ve migrate komutlarını girmeliyiz.
+
+about = models.Textfield(null=True, blank=True)
+avatar = models.ImageField(null=True, blank=True, upload_to='media/') (media diye bir klasör oluşturup onun içine koyacak) 
+not: bir resim yüklemek istiyor isek pythonun görüntüleme kütüphanesi Pillow'u yüklemeliyiz. (python -m pip install Pillow)
+
+database'de resim vs depolama olmaz. size path'i verir.
+bu resmi görmek için bazı ayarlamalar yapacağız:
+
+src/settings.py :
+STATIC_URL altına şunu ekliyoruz: MEDIA_URL = '/media/'
+
+src/urls.py :
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

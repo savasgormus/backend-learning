@@ -1,0 +1,18 @@
+### Lesson_1 ###
+create project and return "welcome Backend"
+Model - Create Student Model
+
+
+### Lesson_2 ###
+ORM Queries
+common Field Types and Field options
+
+### Lesson_3 ###
+realtionships
+
+
+Ufak bir öğrenci database'i oluşturduk ve bu tabloda kullanacağımız özelliklerden bahsettik.
+
+charfield
+integerfield
+imagefield - resim yüklendiğinde görüntülememiz için yapılacak standart işlemler.
