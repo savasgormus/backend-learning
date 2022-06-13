@@ -211,8 +211,24 @@ auto_now_add giriş için kullanıldı. tarih / saati aldı ve ekledi.
 auto_now ise değişiklik yaptığımız tarih /saati aldı ve güncelledi.
 
 
+şimdi Student class'ımızda YEAR_IN_SCHOOL_CHOICES isminde bir obje oluşturduk ve bir değişken ile bunu fonksiyonumuza ekledik. 
+
+YEAR_IN_SCHOOL_CHOICES = [
+        ("FR", 'Freshman'),
+        ("SP", 'Sophomore'),
+        ("JR", 'Junior'),
+        ("SR", 'Senion'),
+        ("GRD", 'Graduate'),
+    ]
+year_in_school = models.CharField(max_length=3, choices=YEAR_IN_SCHOOL_CHOICES)
+
+bu oluşturduğumuz seçenekleri son eklediğimiz kod satırı ile seçebileceğiz.
+
+formumuz değişikliğe uğrayacağı için yine makemigrations ve migrate işlemlerini uygulayacağız.
+makemigrations işleminde bize bir soru gelecek. default(2)'yi seçtik.
 
 
+------------------------- RELATIONSHIPS ----------------------
 
-02:32 -
 
+python manage.py startapp relations ile yeni bir proje oluşturduk ve src klasörü içerisindeki settings'e bu yeni appimizi ekledik.
