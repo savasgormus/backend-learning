@@ -1,3 +1,9 @@
+{% load static %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+
 <h1>This is special page</h1>
 
 {{ request.user }}
@@ -19,3 +25,5 @@ line comment
 {% endcomment %}
 
 <!-- bu yazdığımız incele kısmında görünecek -->
+
+<img src="{% static 'app/kediler.jpeg' %}" alt="kediler" height='300'>

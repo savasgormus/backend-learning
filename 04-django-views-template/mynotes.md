@@ -7,8 +7,11 @@ class based views djangonun kendi classlarından inherit ettiği yapılardır ve
 Django Template nedir?
 
 Djangonun frontendi diyebiliriz. HTML kodlarımızı olduğu yere django template denir. 
-Programlama dili ile html'in karışımı şeklinde yazılır. buna django template language deniyor.
 
+Django Template Language nedir?
+Model View Template'e entegre bir syntaxtır. Dinamik varible'ları görüntülememizi sağlar. ana elemanları şunlardır:
+Variables, Tags, Filters, Comments
+Özetle frontend tarafını interaktif hale getirir.
 
 def tmp(request):
     context = {
@@ -192,5 +195,55 @@ line comment
 django template sayfasında html yazıyoruz fakat html comment kullanmak tavsiye edilmez. çünkü sayfayı incele dediğimizde commentler görünür halde oluyor.
 django commentler frontende gitmez. bu yüzden django comment kullanmalıyız.
 
+-----------------------------------------------------------------------------
 
-2.34.10
+- Static files (images,JS,CSS)
+Django kurduğumuzda static dosyaları düzenleyecek app ve statik dosyaların depolanacağı dosya yolu settings.py'da otomatik olarak belirtiliyor.
+
+app klasörünün altına static isminde bir klasör oluşturacağız. djangonun otomatik kurduğu staticfiles appi (django.contrib.staticfiles) buraya yönlendirerek veri çekmemizi sağlayacak.
+
+örneğin app/static/app içerisine style.css diye bir dosya oluşturduk ve bir backgroundcolor verdik.
+oluşturduğumuz application ile aynı isimde tekrar klasör açtık ki birden fazla applicationumuz var ise karışıklık olmasın.
+<!-- 
+body {
+    background-color: aqua;
+}
+ -->
+
+django template'de bunu aktif hale getirmek için ise sayfanın en başına {% load static %} yazarak css dosyamızı çağıracağız. devamında ise normal css dosyasını linkler gibi head kısmına css dosyamızın ismini yazacağız fakat django tempate language şeklinde :
+<!-- 
+{% load static %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head> 
+-->
+
+template'imize bir resim ekleyelim:
+
+<!-- 
+<img src="{% static 'app/kediler.jpeg' %}" alt="kediler" height='300'>
+ -->
+
+app
+    | - static
+        |  - app1
+            | - css
+            | - html
+            | - js
+        |  - app2
+            | - css
+            | - html
+            | - js
+
+app\static\app\kediler.jpeg => app\static kısmını django'nun kendi uygulaması hallediyor o yüzden dosya yoluna static 'app/kediler.jpeg' yazdık.
+
+eğer applerin haricinde başka bir yerde staticfile arayacaksa şunu settings.py'a ekleyebiliriz:
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+ana klasöre static isminde bir klasör oluşturduk ve içerisine bir css dosyası oluşturduk.
+terminale python manage.py findstatic style.css yazdığımızda bize nerede olduğunu söyledi.
+python manage.py findstatic app/style.css dediğimizde ise app içerisindeki css dosyasını buldu.
