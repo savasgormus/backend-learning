@@ -4,7 +4,7 @@ Python class ya da fonksiyonudur. Web request alır ve web response verir.bu res
 Frontend ve backendi bağlayan bir logice sahiptir. Template(html sayfası) ya da model'ı kullanıcıya gönderir.
 class based views djangonun kendi classlarından inherit ettiği yapılardır ve işimizi kolaylaştırır.
 
-Django Templates nedir?
+Django Template nedir?
 
 Djangonun frontendi diyebiliriz. HTML kodlarımızı olduğu yere django template denir. 
 Programlama dili ile html'in karışımı şeklinde yazılır. buna django template language deniyor.
@@ -91,5 +91,106 @@ urlpatterns = [
 ]
  -->
 
-
 - runserver dedik ve çalıştığını gördük.
+
+- app/views.py:
+
+fonksiyonumuza print(request.user) ekledik. böylece hangi kullanıcı login olmuş konsolda görebileceğiz.
+
+<!-- 
+def home(request):
+    print(request.user)
+    return HttpResponse('<h1>Hello World</h1>')
+ -->
+
+print(request.GET)
+print(request.COOKIES)
+print(request.path)
+print(request.method)
+print(request.META)
+gibi özellikleri kullanabiliriz.
+
+yeni bir view oluşturalım. fakat bu sefer render(request,) ile yapacağız.
+frontende request objesiyle beraber birazdan oluşturacağımız html dosyasını getirecek(render edecek). render import edildikten sonra app içerisine templates isimli bir klasör oluşturacağız ve az önce yazdığımız fonksiyon veriyi buradan çekecek.
+templates klasörünün içerisine de şu an üzerinde çalıştığımız application ile aynı isimde bir klasör oluşturmamız gerekiyor. (örneğin birden fazla applicationumuz var) bu durumda templates/app klasörünü oluşturmamız gerekiyor.
+
+<!-- 
+def special(request):
+    return render(request, 'app/special.html')
+ -->
+
+
+- app/templates/app/special.html
+
+buraya basit bir html yazacağız fakat ek olarak django template language ile kayıtlı kullanıcıyı da göreceğimiz bişey ekleyeceğiz:
+
+<h1>This is special page</h1>
+
+{{ request.user }}
+
+daha sonra bu html sayfasını görebilmek için urls.py'a eklemeliyiz ki görebilelim.
+
+- app/urls.py
+
+special.html sayfasını buraya kaydettik.
+
+<!-- 
+path('special/',special, name='special') 
+-->
+
+http://127.0.0.1:8000/special/ linkini tıkladığımızda yeni oluşturduğumuz template'i görüntüleyeceğiz.
+
+- app/views.py
+
+şimdi special isimli views'ımıza bir context ekleyelim:
+
+    context = {
+        'title': 'clarusway',
+        'dict1': {'django': 'best framework'},
+        'my_list': [2, 3, 4]
+    }
+
+render içerisine de contexti ekledik.
+
+<!-- special'ın son hali:
+def special(request):
+    context = {
+        'title': 'clarusway',
+        'dict1': {'django': 'best framework'},
+        'my_list': [2, 3, 4]
+    }
+    return render(request, 'app/special.html',context)
+ -->
+
+ - app/templates/app/special.html
+
+az önce view'e eklediğimiz contexti şimdi burada görüntüleyelim.
+
+{{ title }} ile context içerisindeki title'ı html sayfasına görebiliyoruz:
+(variablelar)
+<h2>The best bootcamp {{title | upper}}</h2> 
+(ilk title context'den geliyor, ikincisi ise bütün harfler büyük olsun istediğimiz için - {{variable | filter }})
+
+yine context içerisinden dict1'i görelim:
+
+{{ dict1.django | title }} (buradaki title filter, başharfleri büyük olsun diye)
+
+context içerisindeki my_list'i for döngüsüne sokup bütün sayıları tek tek alalım:
+(tagler)
+{% for i in my_list %}
+    <li>{{ i }}</li>
+{% endfor %}   - for döngüsünü bu şekilde bitiriyoruz.
+
+{# #} ise comment yazmak için kullanılıyor. örneğin:
+{# buraya bir comment giriniz #}
+ya da
+{% comment  %}
+this is multiple
+line comment
+{% endcomment %}
+
+django template sayfasında html yazıyoruz fakat html comment kullanmak tavsiye edilmez. çünkü sayfayı incele dediğimizde commentler görünür halde oluyor.
+django commentler frontende gitmez. bu yüzden django comment kullanmalıyız.
+
+
+2.34.10

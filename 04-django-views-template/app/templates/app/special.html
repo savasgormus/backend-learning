@@ -1,0 +1,21 @@
+<h1>This is special page</h1>
+
+{{ request.user }}
+
+<br>
+
+<h2>The best bootcamp {{ title | upper }}</h2>
+
+{{ dict1.django | title }}
+
+{# this code is for loot#}
+{% for i in my_list %}
+    <li>{{ i }}</li>
+{% endfor %}
+
+{% comment  %}
+this is multiple
+line comment
+{% endcomment %}
+
+<!-- bu yazdığımız incele kısmında görünecek -->
