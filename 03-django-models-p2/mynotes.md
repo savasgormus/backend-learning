@@ -232,3 +232,71 @@ makemigrations işleminde bize bir soru gelecek. default(2)'yi seçtik.
 
 
 python manage.py startapp relations ile yeni bir proje oluşturduk ve src klasörü içerisindeki settings'e bu yeni appimizi ekledik.
+
+
+relationship kavramı ile tabloları parçalar haline ayırırız. bunun bize sağladığı avantajlar ise :
+    - daha sade ve anlaşılır bir yapı
+    - daha küçük database boyutu
+    - daha sade sorgular
+    - daha hızlı response
+
+djangoda 3 çeşit relationship vardır: one to one, many to one, many to many.
+
+one to one:
+    örneğin bir sosyal medya sitesine giriş yaptık. buradaki profil sayfası sadece 1 kişiye aittir.
+
+relations/models içerisine 2 tane tablo oluşturalım ve bu tabloları relations/admin.py dosyası içerisine girelim, daha sonra da migrate işlemlerin gerçekleştirelim.
+<!-- relations/admin.
+
+from models import Creator, Language
+
+admin.site.register(Creator)
+admin.site.register(Language)
+ -->
+
+
+<!-- relations/models.py
+
+class Creator(models.Model):
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.first_name
+
+
+class Language(models.Model):
+    name = models.CharField(max_length=20)
+    creator = models.OneToOneField(Creator, on_delete=models.CASCADE) 
+ -->
+
+one to one relationship kurduğumuzda 1 tablodan sadece 1 tane seçenek seçebiliriz.
+
+onetoonefield içerisinde yazdığımız on_delete=models.CASCADE şu işe yarıyor. eğer bu opsiyon silinirse ona bağlı olan diğer tüm seçenekler silinsin.
+on_delete=models.PROTECT ise silinmesini engeller.
+on_delete=models.SET_NULL, null=true silindiğinde null verir.
+on_delete=models.SET_DEFAULT, default=xxx silindiğinde default belirlediğimiz değeri verir.
+
+
+many to one:
+
+bir tablodaki obje, diğer tablodaki birden fazla objeye bağlanabilir. örneğin 1 doktorun birden fazla hastası olabilir. ya da bir blog düşünelim. bir kullanıcının birden fazla postu olabilir. ama bir postun 2 sahibi olamaz.
+models.ForeignKey(bağlı olduğu tablo, on_delete metodu)
+
+<!-- 
+class Frameworks(models.Model):
+    name = models.CharField(max_length=20)
+    language = models.ForeignKey(Language, on_delete=models.PROTECT) 
+    -->
+
+many to many:
+<!-- 
+class Developers(models.Model):
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    frameworks = models.ManyToManyField(Frameworks)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+-->
+on_delete modeli kullanmamıza gerek yok çünkü çoklu bir ilişki uyguluyoruz.
