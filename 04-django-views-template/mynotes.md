@@ -9,7 +9,7 @@ Django Template nedir?
 Djangonun frontendi diyebiliriz. HTML kodlarımızı olduğu yere django template denir. 
 
 Django Template Language nedir?
-Model View Template'e entegre bir syntaxtır. Dinamik varible'ları görüntülememizi sağlar. ana elemanları şunlardır:
+Model View Template'e entegre bir syntaxtır. Dinamik variable'ları görüntülememizi sağlar. ana elemanları şunlardır:
 Variables, Tags, Filters, Comments
 Özetle frontend tarafını interaktif hale getirir.
 
