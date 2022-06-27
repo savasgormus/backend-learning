@@ -86,4 +86,106 @@ urlpatterns = [
 ] 
 -->
 
-- templates/student/ içerisine base.html dosyası oluşturduk ve standart html sayfamızı yarattık (! tab). DOCTYPE ALTINA {% load static%} yazarak statik dosyaları yükleyebiliriz.
+- templates/student/ içerisine base.html dosyası oluşturduk ve standart html sayfamızı yarattık (! tab). DOCTYPE ALTINA {% load static%} yazarak statik dosyaları yükleyebiliriz. Component yapısını kullanacağız. body içerisine bir container oluşturacağız:
+    {% block container %}
+    {% endblock %}  -- açtığımız bloğu kapatmamız gerekiyor
+şeklinde bir block oluşturduk.
+
+- index.html: bu oluşturduğumuz base.html dosyasını extend edeceğiz.
+<!-- 
+{% extends 'student/base.html' %}
+
+{% block container %}
+<h1>Home Page</h1>
+
+<h3>Student App</h3>
+{% endblock container%}
+ -->
+şimdi index html içerisinde container içerisine aldığımız satırları base.html'de oluşturduğumuz container isimli block içerisinde gösterecek. React'da kullandığımız componentler gibi. yani bizim asıl dosyamız base.html olacak. örneğin bir navbar yazacağız. tek tek her sayfa için yapacağımıza base.html'e yazarız ve tüm uygulamada sabit kalır. böylece modüler bir yapı sağlamış olacağız.
+
+- aynı işlemi student.html dosyası için de yapacağız. base.html container içerisine burada veri çekecek.
+<!-- 
+{% extends 'student/base.html' %}
+
+{% block container%}
+<form action="">
+    <label for="">student name</label>
+    <input type="text" />
+    <input type="submit" value="OK" />
+</form>
+{% endblock container %}
+ -->
+
+özet: student ve index html sayfalarını base.html'e extend ettik. yani birbirine bağladık. base.html sayfası içerisinde container ismini verdiğimiz block elementi gördüğü zaman bu iki sayfadan veri çekecek ve container bloğumuzun içerisine yansıyacak.
+/student/ sayfasına girelim ve incele diyelim: görüldüğü gibi student sayfası base.html içerisindeki body'ye dahil. örneğin body içerisine bir div oluşturalım ve container bloğumuzu bu div içerisine alalım. değişikliği bu şekilde daha rahat görebiliriz. views içerisinde yazdığımız render fonksiyonu django template olarak yazdığımız bu dosyaları bize html dosyası olarak çeviriyor.
+
+------------- forms ----------------
+
+student/models içerisinde bir bir database table tanımlamıştık. django bize diyor ki tek tek bunları yapmakla uğraşmak yerine ben senin için yapabilirim. şimdi student klasörü içerisine forms.py diye bir dosya oluşturalım:
+
+burada herşeyi kendimiz tasarlayıp bir form oluşturabiliriz. ya da bir model ile ilişkilendirip bir form oluşturabiliriz.
+
+from django import forms
+<!-- 
+class StudentFormSimple(forms.form):
+    first_name = forms.CharField(max_length=50)
+    last_name = forms.CharField(max_length=50)
+    number = forms.IntegerField(required=False)
+ -->
+bu yaptığımızın aynısını zaten models.py dosyasında da yapmıştık. tek tek yeniden yazmak yerine model ile ilişkilendireceğiz:
+forms.py:
+<!-- 
+from .models import Student
+
+class StudentFrom(forms.ModelForm): 
+    class Meta:
+        model = Student
+        fields = '__all__'
+-->
+
+- views.py dosyasına gidiyoruz: student_page içerisine bu formu koyacağız ve bir context oluşturacağız. context dictionary yapısındaydı. daha sonra da render'in 3. parametresi olarak bu contexti gireceğiz.
+
+<!-- 
+from .forms import StudentForm
+
+def student_page(request):
+    form = StudentForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'student/student.html',context) 
+    -->
+
+form = StudentForm() ile bir değişkene atadık sadece. bunu yapmadan context içerisinde oluşturduğumuz item'a StudentForm() da diyebilirdik:
+
+context = {
+    'form' : StudentForm()
+}
+
+burada en kritik nokta context içerisinde kullandığımızı birebir şekilde template içerisinde kullanabiliriz.(form değişebilir istediğimiz ismi verebiliriz fakat context içerisindeki 'form' ile template'e koyacağımız form ismi birbirini tutmalı.)
+
+- templates/student/student.html: buradaki önceden oluşturduğumuz formu commente aldık. şimdi forms.py dosyasında oluşturduğumuz formu burada göstereceğiz.
+önemli bir detay. bizim oluşturduğumuz form içerisinde resim yükleme özelliği var ve çalışması için form taginin içerisine şunu eklememiz gerekiyor: enctype='multipart/form-data'
+formumuzu oluşturduk ve içerisine değişken gireceğimiz için {{}} kullanarak {{ form.as_p }} yazdık. submit butonumuzu da ekledik.
+<!-- 
+<form action="" method='POST' enctype='multipart/form-data'>
+    {{ form.as_p }}
+    <input type="submit" value="OK">
+</form> -->
+
+sayfamızı yenilediğimizde /student/ linki forms.py'da oluşturduğumuz formu sergileyecek.
+
+özet:
+models.py'da database'e işlenecek bir form oluşturmuştuk. daha sonra bunu forms.py dosyası içerisinde fields = '__all__' ile bütün veri girişlerini alacak şekilde tekrar oluşturduk çünkü frontend tarafında görmek istiyoruz.
+
+daha sonra views.py'a gittik ve bu formdan 'form' isminde bir instance türettik. boş bir form olduğu için içerisine bir context ekledik ve template'e gönderdik.
+
+template'in içerisinde formu yeniden tanımladık. {{form.as_p}}
+burada kullandığımız .as_p'nin amacı her bir field'a <p> tagi ekliyor. böylece bize daha güzel bir görüntü oluşturuyor. 
+
+- forms.py: 
+burada fields = '__all__' demiştik. şimdi diğer opsiyonlarımızı görelim:
+örneğin 
+fields = ['first_name', 'last_name'] dediğimizde sadece isim ve soyisim kısmını göreceğiz.
+ya da label isimlerini değiştirebiliriz.
+labels = {'first_name' : 'User Name'} dictionary yapısı ile first_name'e atadığımız ismi 'User Name' olarak değiştirdik.
