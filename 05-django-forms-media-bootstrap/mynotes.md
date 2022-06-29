@@ -282,3 +282,5 @@ def student_page(request):
     }
     return render(request, 'student/student.html',context)
  -->
+
+ 02 02
