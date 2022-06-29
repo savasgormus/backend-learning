@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import StudentForm
 
 # Create your views here.
@@ -10,7 +10,11 @@ def student_page(request):
     form = StudentForm(request.POST or None)
 
     if form.is_valid():
-        form.save()
+        student = form.save()
+        if 'profile_pic' in request.FILES:
+            student.profile_pic = request.FILES['profile_pic']
+            student.save()
+        return redirect('index')
         # print(form.cleaned_data.get('first_name'))
     context = {
         'form' : form

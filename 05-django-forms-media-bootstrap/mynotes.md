@@ -231,3 +231,54 @@ from .models import Student
 admin.site.register(Student) 
 -->
 
+özet:
+
+views.py dosyasında oluşturduğumuz form'da eğer request post ise bilgilerini içine koyuyoruz ve validasyon sağlandıktan sonra kaydediyor.
+
+- student/views.py
+sorun: post işlemi ile kaydettikten sonra sayfa aynı kalıyor. yani aynı kullanıcı bilgisini arka arkaya kaydedebiliriz. başka bir sayfaya yönlendirmemiz lazım.
+bunun için redirect'i import kullanmalıyız ve hangi sayfaya yönlendireceğimizi belirteceğiz.
+
+form.save() işleminden hemen sonra return redirect('index') => buradaki 'index' urls.py dosyasında name=''e verdiğimiz parametre olmak zorunda.
+
+<!-- 
+def student_page(request):
+    form = StudentForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('index')
+        # print(form.cleaned_data.get('first_name'))
+    context = {
+        'form' : form
+    }
+    return render(request, 'student/student.html',context)
+ -->
+
+buraya kadar yaptığımız bütün işlemler yükleyeceğimiz resmi dahil etmedi. şimdi ufak bir kontrol ile resim yükleme işlemini de çözeceğiz.
+
+student = form.save()
+    if 'profile_pic' in request.FILES:
+        student.profile_pic = request.FILES['profile_pic']
+        student.save()
+buradaki profile_pic models'ın içerisinde oluşturduğumuz alanın adı.
+
+eğer request.FILES içerisinde 'profile_pic' var ise bu resmi al ve profile_pic özelliği olarak koy ve formu kaydet.
+kaydettikten sonra media isimli yeni bir klasör oluşacak ve içerisine seçtiğimiz profil fotoğrafını kaydedecek.
+
+<!-- 
+def student_page(request):
+    form = StudentForm(request.POST or None)
+
+    if form.is_valid():
+        student = form.save()
+        if 'profile_pic' in request.FILES:
+            student.profile_pic = request.FILES['profile_pic']
+            student.save()
+        return redirect('index')
+        # print(form.cleaned_data.get('first_name'))
+    context = {
+        'form' : form
+    }
+    return render(request, 'student/student.html',context)
+ -->
