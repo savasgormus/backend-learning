@@ -329,6 +329,34 @@ yeni bir eklenti yüklediğimiz için requirements.txt dosyasını yenileyeceği
 https://django-crispy-forms.readthedocs.io/en/latest/install.html
 
 
+django - messages kütüphanesi:
 
+views.py dosyasına messages'i import ediyoruz ve student_page için hazırladığımız view'in içine bir success mesajımızı return redirect'den önce veriyoruz.
 
+<!-- 
+from django.contrib import messages
+
+def student_page(request):
+    form = StudentForm(request.POST or None)
+
+    if form.is_valid():
+        student = form.save()
+        if 'profile_pic' in request.FILES:
+            student.profile_pic = request.FILES['profile_pic']
+            student.save()
+        messages.success(request,'Student saved succesfully')
+        return redirect('index')
+        # print(form.cleaned_data.get('first_name'))
+    context = {
+        'form' : form
+    }
+    return render(request, 'student/student.html',context) 
+    -->
+tabi bu mesajı bir if döngüsü ile base.html sayfasında göstermemiz gerekiyor. biraz bootstrap ile süsleyip bu alerti containerdan önce gösterelim
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class='alert alert-success'> {{message}} </div>
+            {% endfor %}
+        {% endif %}
 
