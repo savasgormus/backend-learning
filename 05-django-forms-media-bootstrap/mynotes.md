@@ -125,8 +125,9 @@ student/models içerisinde bir bir database table tanımlamıştık. django bize
 
 burada herşeyi kendimiz tasarlayıp bir form oluşturabiliriz. ya da bir model ile ilişkilendirip bir form oluşturabiliriz.
 
-from django import forms
 <!-- 
+from django import forms
+
 class StudentFormSimple(forms.form):
     first_name = forms.CharField(max_length=50)
     last_name = forms.CharField(max_length=50)
@@ -169,6 +170,7 @@ burada en kritik nokta context içerisinde kullandığımızı birebir şekilde 
 formumuzu oluşturduk ve içerisine değişken gireceğimiz için {{}} kullanarak {{ form.as_p }} yazdık. submit butonumuzu da ekledik.
 <!-- 
 <form action="" method='POST' enctype='multipart/form-data'>
+
     {{ form.as_p }}
     <input type="submit" value="OK">
 </form> -->
@@ -189,3 +191,43 @@ burada fields = '__all__' demiştik. şimdi diğer opsiyonlarımızı görelim:
 fields = ['first_name', 'last_name'] dediğimizde sadece isim ve soyisim kısmını göreceğiz.
 ya da label isimlerini değiştirebiliriz.
 labels = {'first_name' : 'User Name'} dictionary yapısı ile first_name'e atadığımız ismi 'User Name' olarak değiştirdik.
+
+bu oluşturduğumuz formu doldurup göndermek istediğimizde bir hata alacağız. django güvenlik önlemi olarak csrf_token istiyor. biz bunu eklemediğimiz için işlem başarısız olacak.
+
+- student/student.html dosyamıza formumuzu eklemiştik. şimdi buraya form içerisine eksik olan csrf_token'ımızı ekliyoruz:
+<!-- 
+<form action="" method='POST' enctype='multipart/form-data'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <input type="submit" value="OK">
+</form> -->
+
+bu işlemi gerçekleştirdikten sonra konsolda 'POST' işleminin başarılı olduğunu göreceğiz.
+
+- student/views.py
+şimdi 
+form = StudentForm(request.Post or None) dedikten sonra formun valid olup olmadığını anlamak için bir if statement oluşturacağız ve cleaned_data yöntemi ile form içerisindeki bilgiler konsolda göreceğiz:
+<!-- 
+def student_page(request):
+    form = StudentForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        print(form.cleaned_data.get('first_name'))
+    context = {
+        'form' : form
+    }
+    return render(request, 'student/student.html',context) 
+    -->
+form validasyonu nedir? 
+örneğin username'i boş bıraktık. form'u kaydedemeyiz fakat space ile boşluk bırakarak frontendi kandırmaya çalışabiliriz. is_valid() ile bu seçeneği de ortadan kaldırırız. çünkü bu sayede backend tarafı modellere bakıyor ve tek tek kontrol ediyor. validasyon tamamlandıktan sonra form.save() ile backende gönderiyor. admin dashboard ya da db.sqlite3 dosyasında işlemin gerçekleşip gerçekleşmediğini görebiliriz.
+
+admin dashboard ile görmeyi deneyelim:
+açtığımızda göremeyeceğiz çünkü admin.py dosyasına bu tabloyu eklemedik. ekledikten sonra student isimli tablomuz adminboard'da yerini alacak:
+<!-- 
+from .models import Student
+
+admin.site.register(Student) 
+-->
+

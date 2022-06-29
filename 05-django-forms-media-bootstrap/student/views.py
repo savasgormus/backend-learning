@@ -7,8 +7,12 @@ def index(request):
     return render(request, 'student/index.html')
 
 def student_page(request):
-    # formStudent = StudentForm()
+    form = StudentForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        # print(form.cleaned_data.get('first_name'))
     context = {
-        'form' : StudentForm()
+        'form' : form
     }
     return render(request, 'student/student.html',context)
