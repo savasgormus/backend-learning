@@ -26,10 +26,10 @@ class Student(models.Model) :
     number = models.IntegerField(blank=True, null=True)
     profile_pic = models.ImageField(blank=True, upload_to='profile_pics') 
 -->
-    admin panelinde oluşturduğumuz model'in düzgün görüntülenmesi için oluşturduğumuz class'a __str__(self) ekliyoruz:
+admin panelinde oluşturduğumuz model'in düzgün görüntülenmesi için oluşturduğumuz class'a __str__(self) ekliyoruz:
 
-        def __str__(self):
-            return f'{self.first_name} {self.last_name}'
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
 
 - terminale gidiyoruz ve profil fotoğrafını görüntüleyebilmemiz için pillow'u yüklüyoruz. oluşturduğumuz model database'e yeni bir veri eklediği için makemigrations ve migrate işlemlerini de yapacağız:
 
@@ -183,7 +183,7 @@ models.py'da database'e işlenecek bir form oluşturmuştuk. daha sonra bunu for
 daha sonra views.py'a gittik ve bu formdan 'form' isminde bir instance türettik. boş bir form olduğu için içerisine bir context ekledik ve template'e gönderdik.
 
 template'in içerisinde formu yeniden tanımladık. {{form.as_p}}
-burada kullandığımız .as_p'nin amacı her bir field'a <p> tagi ekliyor. böylece bize daha güzel bir görüntü oluşturuyor. 
+burada kullandığımız .as_p'nin amacı her bir field'a p tagi ekliyor. böylece bize daha güzel bir görüntü oluşturuyor. 
 
 - forms.py: 
 burada fields = '__all__' demiştik. şimdi diğer opsiyonlarımızı görelim:
@@ -274,6 +274,8 @@ def student_page(request):
         student = form.save()
         if 'profile_pic' in request.FILES:
             student.profile_pic = request.FILES['profile_pic']
+            # ya da 
+            # student.profile_pic = request.FILES.get('profile_pic')
             student.save()
         return redirect('index')
         # print(form.cleaned_data.get('first_name'))
@@ -283,4 +285,50 @@ def student_page(request):
     return render(request, 'student/student.html',context)
  -->
 
- 02 02
+çok daha bir pratik yol ise:
+
+def student_form(request):
+    form = StudentForm()
+    if request.method == 'POST':
+        form = StudentForm(request.POST, request.FILES)
+        # formu yeniden oluşturup POST verileri ve Dosyaları ekliyoruz.
+        if form.is_valid():
+            form.save()
+            return redirect('/student/')
+
+    context = {
+        'form': form
+    }
+    return render(request, 'student/student.html', context)
+
+------------ BOOTSTRAP ---------------
+
+bootstrapin sitesinden css kısmını aldık ve base.html dosyamızın head kısmına yapıştırdık. js kısmını da body'nin en altına yapıştırdık.
+
+- base.html
+div'imize biraz şekil verip bir class ismi verelim. daha sonra student klasörümüzün içinde static/student klasörü oluşturuo içerisine style.css dosyası oluşturalım. bunlar bizim kendi yazacağımız css dosyalarını barındıracak. h3 tagine bir background color verdikten sonra yine base.html dosyasına bu oluşturduğumuz style.css dosyasını bağlayalım:
+<link rel="stylesheet" href="{% static 'student/style.css' %}">
+
+<!-- <div style='margin-top: 100px; margin-bottom: 100px' class='container'> -->
+
+djangonun bootstrap ile oluşturulmuş, formları daha güzel görüntülemesi için kullandığı bir tool yükleyeceğiz:
+pip install django-crispy-forms
+daha sonra bunu settings.py dosyasında installed apps'e kaydedeceğiz:
+#3rd part apps
+'crispy_forms',
+yine settings.py dosyasının en altına şunu ekliyoruz:
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+formumuzun olduğu student.html dosyasında da ufak bir ekleme yapacağız:
+formun bir üst satırına
+{% load crispy_forms_tags %}
+ayrıca {{form.as_p}} satırını {{ form | crispy}} olarak değiştireceğiz.
+
+yeni bir eklenti yüklediğimiz için requirements.txt dosyasını yenileyeceğiz.
+
+https://django-crispy-forms.readthedocs.io/en/latest/install.html
+
+
+
+
+
