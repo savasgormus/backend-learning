@@ -79,10 +79,10 @@ urlpatterns = [
 student/urls.py
 <!-- 
 from django.urls import path
-from .views import student
+from .views import student_page
 
 urlpatterns = [
-    path('',student, name='student')
+    path('',student_page, name='student')
 ] 
 -->
 
@@ -359,4 +359,5 @@ tabi bu mesajı bir if döngüsü ile base.html sayfasında göstermemiz gerekiy
                 <div class='alert alert-success'> {{message}} </div>
             {% endfor %}
         {% endif %}
+
 
