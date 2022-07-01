@@ -165,6 +165,7 @@ urlpatterns = [
 
 - fscohort/templates/fscohort/student_list.html
 bloğumuzun içerisine bir liste oluşturacağız ve for döngüsü kullanarak sıralı bir şekilde görünmesini sağlayacağız.
+
 <!-- 
 {% block container %}
     <ul>
@@ -176,6 +177,73 @@ bloğumuzun içerisine bir liste oluşturacağız ve for döngüsü kullanarak s
     </ul>
 {% endblock container %}
  -->
+
+----- CREATE -----
+
+şimdi database'e veri girişi sağlayacağız fakat bunun için ilk önce bir form oluşturup render etmemiz gerekiyor.
+
+- fscohort/forms.py
+bu dosyayı oluşturduk. 2 şekilde form yapabiliriz. birinci yok yeni bir form oluşturup gereken alanları tek tek yazmak. ikinci yol ise zaten hali hazırda backend için kullandığımız model'den bir form oluşturmak.
+django'dan forms'u models.py'dan da Student'ı import ettikten sonra bir class tanımlayarak formumuzu oluşturacağız:
+
+<!-- 
+from django import forms
+from .models import Student
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+        labels = {'first_name' : 'Adınız', 'last_name' : 'Soyadınız', 'number' : 'Numaranız'} 
+-->
+
+label içerisine görmek istediğimiz şekilde form alanlarını değiştirdik. yine dictionary formatında key, value alarak bunu düzenledik.
+şimdi bu form için view yazma vakti.
+
+- fscohort/views.py:
+yine aynı şekilde bir fonksiyon oluşturarak (student_add ismini verelim) bir context oluşturacağız ve render edeceği parametreleri vereceğiz. daha sonra bu view için bir template ve url oluşturacağız.
+
+<!-- 
+from .forms import StudentForm
+
+def student_add(request):
+    form = StudentForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'fscohort/student_add.html', context)
+ -->
+
+- fscohort/templates/fscohort/student_add.html:
+
+base.html'i extend ettikten sonra oradaki block'u oluşturduk(container). ve içerisine bir form ve submit butonu oluşturduk.
+bu bir post işlemi olduğu için {% csrf_token %} girdik. bu djangonun güvenlik önlemi olarak aldığı bir kod. csrf token olmadan post işlemini yapamayız. daha sonra student_add için oluşturduğumuz context'i token'ın altına girdik  {{ form.as_p }} (form ismini vermiştik.).
+
+- fscohort/urls.py
+
+bu template'i frontende yansıtmak için bir path oluşturmalıyız. student_app'i viewsden import ediyoruz ve urlpatterns içerisine linkini veriyoruz.
+
+<!-- 
+from django.urls import path
+from .views import index, student_add, student_list
+
+urlpatterns = [
+    path('', index, name='home'),
+    path('list/', student_list,name='list'),
+    path('add/', student_add, name='add')
+]
+ -->
+
+şu haliyle hiçbir veri girişi yapamayız. gelen veriyi yakalayıp database'imize göndermek için bir işlem yapacağız:
+
+-fscohort/views.py
+
+
+1.41
+
+
+
+
 
 
 

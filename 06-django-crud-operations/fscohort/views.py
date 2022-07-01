@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Student
+from .forms import StudentForm
 
 # Create your views here.
 
@@ -13,3 +14,11 @@ def student_list(request):
         "students" : students
     }
     return render(request,'fscohort/student_list.html',context)
+
+def student_add(request):
+    form = StudentForm()
+    print(request.POST)
+    context = {
+        'form' : form
+    }
+    return render(request, 'fscohort/student_add.html', context)
