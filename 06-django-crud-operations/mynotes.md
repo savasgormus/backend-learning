@@ -99,3 +99,43 @@ urlpatterns = [
 ]
  -->
 
+- fscohort/models.py: basit bir model oluşturuyoruz ve bunu migrate işlemlerine tutuyoruz. daha sonra bu formu adminboard'da görmek için fscohort/admin.py dosyasına ekliyoruz.
+
+<!-- 
+from django.db import models
+
+# Create your models here.
+
+class Student(models.Model):
+    first_name : models.CharField(max_length=30)
+    last_name : models.CharField(max_length=30)
+    number : models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+    
+    class Meta:
+        verbose_name_plural = 'Öğrenciler'
+-->
+
+<!-- 
+from django.contrib import admin
+from .models import Student
+# Register your models here.
+
+admin.site.register(Student)
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
