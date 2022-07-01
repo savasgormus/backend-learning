@@ -126,16 +126,56 @@ from .models import Student
 admin.site.register(Student)
 -->
 
+database'imize admin panelinden birkaç öğrenci ekleyelim. şimdi READ işlemini yapacağız. yani database'imizden veriyi çekip template'imize yansıtacağız.(frontende göndereceğiz)
 
+- fscohort/views.py
+models'den Student'ı import ettikten sonra bir fonksiyon yazacağız. bir değişken oluşturduk ve bu Student objesinin bütün elemanlarını buraya atadık. bir context oluşturacağız. context dictionary yapısındaydı. isim olarak yine 'students' verdik ve value olarak yukarıda oluşturduğumuz student değişkenini atadıktan sonra return kısmını yazacağız.
+return render(request, 'fscohort/student_list.html', context) ile bize return olarak neyi render edeceğini belirttik.
 
+<!-- 
+from .models import Student
 
+def student_list(request):
+    students = Student.objects.all()
+    context = {
+        "students" : students
+    }
+    return render(request,'fscohort/student_list.html',context)
+ -->
 
+render'ın ikinci parametresi olan student_list.html dosyasını template klasöründe oluşturacağız.
 
+- fscohort/templates/fscohort/student_list.html
+html dosyamızı oluşturduk. ilk işimiz base.html'i extend etmek olacak. daha sonra bir block oluşturacağız. block ismi base.html'de verdiğimiz isimle aynı olmak zorunda(container). block içerisinde görmek istediğimiz contexti yazıyoruz: {{ student }}
 
+- fscohort/urls.py
+template'imizi görebilmemiz için buna bir path oluşturmamız lazım. views'den student_list'i import edip urlpatterns içerisine bu path'i 'list/' linki ve 'list' ismi ile ekledik.
 
+<!-- 
+from django.urls import path
+from .views import index, student_list
 
+urlpatterns = [
+    path('', index, name='home'),
+    path('list/', student_list,name='list')
+]
+ -->
 
+şimdi /list/ linkine girdiğimizde bize oluşturduğumuz öğrencileri query şeklinde görebiliyoruz. şimdi bu listeyi biraz düzenli hale getirelim.
 
+- fscohort/templates/fscohort/student_list.html
+bloğumuzun içerisine bir liste oluşturacağız ve for döngüsü kullanarak sıralı bir şekilde görünmesini sağlayacağız.
+<!-- 
+{% block container %}
+    <ul>
+        {% for student in students  %}
+            <li>{{ student.number }} - 
+                {{ student.first_name }} - 
+                {{ student.last_name}}</li>
+        {% endfor %}
+    </ul>
+{% endblock container %}
+ -->
 
 
 
