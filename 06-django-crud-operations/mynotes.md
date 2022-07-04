@@ -238,8 +238,95 @@ urlpatterns = [
 
 -fscohort/views.py
 
+http://127.0.0.1:8000/add/ adresine girdiğimizde GET methoduyla request gönderiyoruz ve sayfayı görüyoruz. Şimdi formu doldurup 'POST' metoduyla request göndereceğiz. student_add isimli viewimize bununla ilgili bir kontrol eklememiz gerekiyor:
+      if request.method == 'POST':
+        form = StudentForm(request.POST)
+        if form.is_valid:
+            form.save()
+        return redirect('list')
+burada yaptığımız işlem şu şekilde açıklanabilir: eğer gelen request 'POST' ise 'form' değişkeni içerisine StudentForm'a gelen Post verilerini at. ve eğer form valid ise formu kaydet ve 'list' linkine redirect et.
+<!-- 
+def student_add(request):
+    form = StudentForm()    
+    print(request.POST)
+    if request.method == 'POST':
+        form = StudentForm(request.POST)
+        if form.is_valid:
+            form.save()
+        return redirect('list')
+    context = {
+        'form' : form
+    }
+    return render(request, 'fscohort/student_add.html', context)
+-->
 
-1.41
+bu şekilde database'imize frontend tarafından veri girişi yapmış olduk.
+
+----- UPDATE -----
+
+- fscohort/views.py
+
+update işlemi için oluşturacağımız view, diğerlerinden farklı olarak 2 parametre alıyor. birisi request, diğeri ise unique olan id.
+daha sonra bu id ile database'den veri çekeceğiz ve update işlemini gerçekleştireceğiz.
+StudentForm'dan gelecek spesifik veriyi belirtmek için yani değişikliği yapacağımız öğrenciyi instance=student ile belirttik.
+
+<!-- 
+def student_update(request, id):
+    student = Student.objects.get(id=id)
+    form = StudentForm(instance=student)
+    context = {
+        'form': form
+    }
+    return render(request, 'fscohort/student_update.html',context) 
+-->
+
+- fscohort/templates/fscohort/student_update.html:
+
+viewimizi oluşturduktan sonra ilgili html dosyamızı oluşturduk. base.htmli extend ettik ve container isimli bloğumuzun içerisine formumuzu koyduk.
+csrf_token, context içinde görmek istediğimiz veri(views.py'da 'form' ismini vermiştik.) ve submit butonumuzu yerleştirdik.
+
+<!-- 
+{% extends 'fscohort/base.html' %}
+
+{% block container %}
+<h2>Student Update</h2>
+<form action="">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Update">
+</form>
+
+{% endblock container %}
+-->
+
+- fscohort/urls.py:
+
+view ve template'imizi oluşturduk. sırada url'sini oluşturmak var. path'i oluştururken şuna dikkat etmeliyiz. update edeceğimiz veri bir id ile gelmek zorunda. 'update/<int:id>' şeklinde belirtmemiz gerekecek.
+
+<!-- 
+from .views import student_update
+path('update/<int:id',student_update,name='update') 
+-->
+
+bu şekilde http://127.0.0.1:8000/update/3 adresini girdiğimizde unique id'si 3 olan öğrenci bize gelecek.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

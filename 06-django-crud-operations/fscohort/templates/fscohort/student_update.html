@@ -1,0 +1,11 @@
+{% extends 'fscohort/base.html' %}
+
+{% block container %}
+<h2>Student Update</h2>
+<form action="">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Update">
+</form>
+
+{% endblock container %}
