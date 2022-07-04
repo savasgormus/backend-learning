@@ -1,13 +1,13 @@
-python -m venv env
-.\env\Scripts\activate
-pip install django
-pip install python-decouple
-django-admin startproject main .
-py manage.py migrate
-py manage.py runserver
-py manage.py startapp fscohort
+- python -m venv env
+- .\env\Scripts\activate
+- pip install django
+- pip install python-decouple
+- django-admin startproject main .
+- py manage.py migrate
+- py manage.py runserver
+- py manage.py startapp fscohort
 
-CRUD nedir?
+- CRUD nedir?
 Create - Read - Update - Delete
 
 ----- kurulum aşaması -----
