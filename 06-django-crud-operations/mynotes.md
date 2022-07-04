@@ -368,20 +368,3 @@ path('delete/<int:id>',student_delete,name='delete')'ı url patterns'e ekliyoruz
     </a>
 {% endblock container %}
  -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
