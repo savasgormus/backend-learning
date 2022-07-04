@@ -310,13 +310,64 @@ path('update/<int:id',student_update,name='update')
 
 bu şekilde http://127.0.0.1:8000/update/3 adresini girdiğimizde unique id'si 3 olan öğrenci bize gelecek.
 
+artık yapacağımız işlem create işlemi ile neredeyse aynı. tek fark request.POST yanında instance=student'ı almak.
 
+      if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+        return redirect('list')
 
+eğer instance = student parametresini eklemez ise create işlemi oluşturur. biz bu sayede var olan instance'ı değiştirebiliyoruz.
 
+<!-- 
+def student_update(request, id):
+    student = Student.objects.get(id=id)
+    form = StudentForm(instance=student)
 
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('list')
 
+    context = {
+        'form': form
+    }
+    return render(request, 'fscohort/student_update.html',context) 
+-->
 
+----- DELETE -----
 
+- views.py:
+delete işlemi de 2 parametre alır. request ve id. Student objesinden id'yi alıyoruz ve eğer request 'POST' ise bu objeyi siliyoruz ve 'list' urlsine yönlendiriyoruz.
+<!-- 
+def student_delete(request, id):
+    student = Student.objects.get(id=id)
+    if request.method == 'POST':
+        student.delete()
+        return redirect('list')
+    return render(request,'fscohort/student_delete.html')
+ -->
+
+- urls.py 
+path('delete/<int:id>',student_delete,name='delete')'ı url patterns'e ekliyoruz.
+
+- student_delete.html
+<!-- 
+{% extends 'fscohort/base.html' %}
+
+{% block container %}
+    <form action="" method="POST">
+        <p>Are You Sure to delete {{student}} </p>
+        {% csrf_token %}
+        <input type="submit" value="Yes">
+    </form>
+    <a href="{% url 'list' %}">
+        <button>No</button>
+    </a>
+{% endblock container %}
+ -->
 
 
 
