@@ -1,0 +1,11 @@
+{% extends 'fscohort/base.html' %}
+
+{% block content %}
+<h2>
+    <center>
+        This is home page <br><hr>
+        <a href="{% url 'list' %}">List</a>
+        {% comment %} <a href="{% url 'add' %}">Add</a> {% endcomment %}
+    </center>
+</h2>
+{% endblock content %}
