@@ -1,6 +1,7 @@
 - python -m venv env
 - .\env\Scripts\activate
 - pip install -r requirements.txt
+
     requirements.txt :
         asgiref==3.5.0
         Django==4.0.1
@@ -9,6 +10,7 @@
         python-decouple==3.5
         sqlparse==0.4.2
         tzdata==2021.5
+
 - django-admin startproject main .
 - py manage.py migrate
 - py manage.py runserver
@@ -27,7 +29,7 @@ Aradaki temel fark şu: Function-based Viewlerde kontrol tamamen bizde ve herşe
 - models.py:
 
 modelimizi oluşturuyoruz:
-# ##############################################################
+# CODE
 ```python
 from django.db import models
 
@@ -59,7 +61,7 @@ migrate işlemimizi yaptıktan sonra runserver dedik ve admin panelinde gördük
 
 - templates/fscohort klasörü içerisine base.html dosyasını oluşturduk. container isimli bir block oluşturduk. ayrıca home page'e dönmek için bir a tagi oluşturduk. href= "{% url 'home' %} dedik. bu daha sonra oluşturacağımız home.html dosyasına oluşturacağımız view için gerekli olacak.(name='home')
 
-# #############################################################
+# CODE
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -89,7 +91,7 @@ migrate işlemimizi yaptıktan sonra runserver dedik ve admin panelinde gördük
 - forms.py:
 form.py dosyası sayesinde models içerisinde oluşturduğumuz tabloyu frontende yansıtacağız.
 
-# #############################################################
+# CODE
 ```python
 from django import forms
 from .models import Student
@@ -99,3 +101,113 @@ class StudentForm(forms.ModelForm):
         models = Student
         fields = '__all__'
 ```
+
+- şimdi sırasıyla crud işlemleri için tek tek view ve template oluşturup urls.py dosyasında path'e ekleyeceğiz. fakat öncesinde media dosyalarını yüklemek ve app'imiz için yazacağımız url'leri işlemek için main/urls.py'da bir işlem yapmamız gerekiyor:
+
+# CODE
+```python
+from django.contrib import admin
+from django.urls import path,include
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include('fscohort.urls'))
+]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+- views.py:
+home page ve student list için birer view oluşturalım. daha sonra bu 2 view için birer template ve url pathi ekleyeceğiz:
+
+# CODE views.py
+```python
+from django.shortcuts import render
+from .models import Student
+# Create your views here.
+
+def home(request):
+    return render(request, 'fscohort.home.html')
+
+def student_list(request):
+    students = Student.objects.all()
+    context = {
+        'students' : students
+    }
+    return render(request,'fscohort/student_list',context)
+```
+
+- urls.py:
+student_list ve home için oluşturduğumuz viewleri import ettik ve path'lerini ekledik:
+
+# CODE urls.py
+```python
+from django.urls import path
+from .views import home,student_list
+
+urlpatterns = [
+    path('', home, name="home"),
+    path('student_list/', student_list, name="list"),
+]
+```
+
+# CODE home.html
+```html
+{% extends 'base.html' %}
+{% block container %}
+<h2>
+    <center>
+        This is home page <br><hr>
+        <a href="{% url 'list' %}">List</a>
+        <a href="{% url 'add' %}">Add</a>
+    </center>
+</h2>
+{% endblock container %}
+```
+
+# CODE student_list.html
+```html
+{% extends 'fscohort/base.html' %} 
+{% block content %}
+<h2>Student List</h2>
+<ul>
+  {% for student in students %}
+  <a href="{% url 'detail' student.id  %}">
+    <li>{{student}}</li>
+  </a>
+  {% endfor %}
+</ul>
+{% endblock content %}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

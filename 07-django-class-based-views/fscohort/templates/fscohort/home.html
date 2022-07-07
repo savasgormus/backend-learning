@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block container %}
+<h2>
+    <center>
+        This is home page <br><hr>
+        <a href="{% url 'list' %}">List</a>
+        <a href="{% url 'add' %}">Add</a>
+    </center>
+</h2>
+{% endblock container %}
