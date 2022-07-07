@@ -27,8 +27,7 @@ Aradaki temel fark şu: Function-based Viewlerde kontrol tamamen bizde ve herşe
 - models.py:
 
 modelimizi oluşturuyoruz:
-
-# 
+# ##############################################################
 ```python
 from django.db import models
 
@@ -52,4 +51,51 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.number} {self.first_name} {self.last_name}"
+```
+
+modelimiz için bir gender alanı oluşturduk ve içerisine seçenekler ekledik. daha sonra gender için modelimizde bir choice attribute'u ile bu seçenekleri seçmek için bir yer oluşturduk. admin.py dosyasına bu modeli ekledik.
+
+migrate işlemimizi yaptıktan sonra runserver dedik ve admin panelinde gördük.
+
+- templates/fscohort klasörü içerisine base.html dosyasını oluşturduk. container isimli bir block oluşturduk. ayrıca home page'e dönmek için bir a tagi oluşturduk. href= "{% url 'home' %} dedik. bu daha sonra oluşturacağımız home.html dosyasına oluşturacağımız view için gerekli olacak.(name='home')
+
+# #############################################################
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CW FSCohort</title>
+  </head>
+
+  <body>
+    <h1>
+      <hr />
+      <center>Clarusway</center>
+      <hr />
+    </h1>
+    <a href="{% url 'home' %}">HOME</a>
+
+    {% block content %} 
+    {# Add some content here on your pages! #}
+    {% endblock content %}
+    
+  </body>
+</html>
+```
+
+- forms.py:
+form.py dosyası sayesinde models içerisinde oluşturduğumuz tabloyu frontende yansıtacağız.
+
+# #############################################################
+```python
+from django import forms
+from .models import Student
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        models = Student
+        fields = '__all__'
 ```
