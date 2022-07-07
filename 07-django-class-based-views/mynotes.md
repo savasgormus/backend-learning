@@ -26,3 +26,52 @@ Ayrıca python objelerini çağırabiliriz(attribute).
 
 Aradaki temel fark şu: Function-based Viewlerde kontrol tamamen bizde ve herşeyi kendimiz yazıyoruz. Class-based Viewlerde ise inherit edeceğimiz viewlerle ilgili daha çok bilgi sahibi olmak gerekiyor ve üzerinde gerektiğinde değişiklik yapmamız gerekiyor.
 
+- views.py
+
+homepage için class based bir view yazacağız. fakat önce TemplateView'ı django.views.generic.base'den import etmeliyiz. class based viewler, function viewlerden farklı olarak request değil TemplateView alırlar.
+
+# Code
+```py
+from django.views.generic.base import TemplateView
+
+class HomeView(TemplateView):
+    template_name = 'fscohort/home.html'
+```
+
+- şimdi bunu urls.py dosyasına kaydedeceğiz.
+# Code
+```py
+from .views import HomeView
+
+path('', HomeView.as_view(), name="home"),
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

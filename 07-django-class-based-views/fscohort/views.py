@@ -1,11 +1,19 @@
+from urllib import request
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .forms import StudentForm
 from .models import Student
+
+from django.views.generic.base import TemplateView
 # Create your views here.
 
+# function based
 def home(request):
     return render(request, "fscohort/home.html")
+
+# class based
+class HomeView(TemplateView):
+    template_name = 'fscohort/home.html'
 
 
 def student_list(request):
