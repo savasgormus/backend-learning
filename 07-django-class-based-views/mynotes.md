@@ -29,7 +29,7 @@ Aradaki temel fark şu: Function-based Viewlerde kontrol tamamen bizde ve herşe
 modelimizi oluşturuyoruz:
 
 # 
-'''
+'''python
 from django.db import models
 
 class Student(models.Model):
