@@ -127,7 +127,7 @@ from .models import Student
 # Create your views here.
 
 def home(request):
-    return render(request, 'fscohort.home.html')
+    return render(request, 'fscohort/home.html')
 
 def student_list(request):
     students = Student.objects.all()
@@ -154,15 +154,14 @@ urlpatterns = [
 # CODE home.html
 ```html
 {% extends 'base.html' %}
-{% block container %}
+{% block content %}
 <h2>
     <center>
         This is home page <br><hr>
         <a href="{% url 'list' %}">List</a>
-        <a href="{% url 'add' %}">Add</a>
     </center>
 </h2>
-{% endblock container %}
+{% endblock content %}
 ```
 
 # CODE student_list.html
@@ -179,6 +178,7 @@ urlpatterns = [
 </ul>
 {% endblock content %}
 ```
+
 
 
 
