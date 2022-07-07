@@ -7,25 +7,25 @@ from .models import Student
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 # Create your views here.
 
 # function based
-def home(request):
-    return render(request, "fscohort/home.html")
+# def home(request):
+    # return render(request, "fscohort/home.html")
 
 # class based
 class HomeView(TemplateView):
     template_name = 'fscohort/home.html'
 
-
-def student_list(request):
-    students = Student.objects.all()
-    context = {
-        "students":students
-    }
-    return render(request, "fscohort/student_list.html", context)
+# funtion based
+# def student_list(request):
+#     students = Student.objects.all()
+#     context = {
+#         "students":students
+#     }
+#     return render(request, "fscohort/student_list.html", context)
 
 # class based
 class StudentListView(ListView):
@@ -34,18 +34,18 @@ class StudentListView(ListView):
     paginate_by = 10
     
 # function based
-def student_add(request):
-    form = StudentForm()
+# def student_add(request):
+#     form = StudentForm()
 
-    if request.method == "POST":
-        form = StudentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("list")
-    context = {
-        "form":form
-    }
-    return render(request, "fscohort/student_add.html", context)
+#     if request.method == "POST":
+#         form = StudentForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect("list")
+#     context = {
+#         "form":form
+#     }
+#     return render(request, "fscohort/student_add.html", context)
 
 # class based
 class StudentCreateView(CreateView):
@@ -56,12 +56,12 @@ class StudentCreateView(CreateView):
 
 
 # function based
-def student_detail(request,id):
-    student = Student.objects.get(id=id)
-    context = {
-        "student":student
-    }
-    return render(request, "fscohort/student_detail.html", context)
+# def student_detail(request,id):
+#     student = Student.objects.get(id=id)
+#     context = {
+#         "student":student
+#     }
+#     return render(request, "fscohort/student_detail.html", context)
 
 # class based
 class StudentDetailView(DetailView):
@@ -69,19 +69,19 @@ class StudentDetailView(DetailView):
     pk_url_kwarg = 'id'
 
 # function based
-def student_update(request, id):
-    student = Student.objects.get(id=id)
-    form = StudentForm(instance=student)
-    if request.method == "POST":
-        form = StudentForm(request.POST, request.FILES, instance=student)
-        if form.is_valid():
-            form.save()
-            return redirect("list")
-    context= {
-        "student":student,
-        "form":form
-    }
-    return render(request, "fscohort/student_update.html", context)
+# def student_update(request, id):
+#     student = Student.objects.get(id=id)
+#     form = StudentForm(instance=student)
+#     if request.method == "POST":
+#         form = StudentForm(request.POST, request.FILES, instance=student)
+#         if form.is_valid():
+#             form.save()
+#             return redirect("list")
+#     context= {
+#         "student":student,
+#         "form":form
+#     }
+#     return render(request, "fscohort/student_update.html", context)
 
 # class based
 class StudentUpdateView(UpdateView):
@@ -91,21 +91,20 @@ class StudentUpdateView(UpdateView):
     success_url = '/student_list/'
 
 # function based
-def student_delete(request, id):
+# def student_delete(request, id):
+#     student = Student.objects.get(id=id)
+#     if request.method == "POST":
+#         student.delete()
+#         return redirect("list")
+#     context= {
+#         "student":student
+#     }
+#     return render(request, "fscohort/student_delete.html",context)
 
-    student = Student.objects.get(id=id)
-
-    if request.method == "POST":
-
-
-        student.delete()
-        return redirect("list")
-
-    context= {
-        "student":student
-    }
-    return render(request, "fscohort/student_delete.html",context)
-
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'fscohort/student_delete.html'
+    success_url = reverse_lazy('list')
 
 
 

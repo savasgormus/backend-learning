@@ -91,7 +91,7 @@ urlpatterns =[
 from django.views.generic.detail import DetailView'i import ettik. Viewimizin modelini belirtiyoruz. burada ufak bir fark var. func based viewimize baktığımızda biz bunları id ile çektik. defaultu pk olarak geçiyor. pk'i id olarak modifiye edeceğiz: pk_url_kwarg = 'id'
 
 yine aynı şekilde urls.py dosyasına import edip giriş yapıyoruz:
-path('student_detail/', StudentDetailView.as_view(), name="list"),
+path('student_detail/', StudentDetailView.as_view(), name="detail"),
 
 # Code
 ```py
@@ -146,7 +146,7 @@ class StudentUpdateView(UpdateView):
     template_name = 'fscohort/student_update.html'
     success_url = '/student_list/'
 
-    
+
 urls.py
 from .views import StudentUpdateView
 urlpattern = [
@@ -154,8 +154,23 @@ urlpattern = [
 ]
 ```   
 
+- Delete View:
+Method post ise bir delete işlemi yapar. django.views.generic.edit'dan import ettikten sonra template_name girdik. (hatırlatma eğer generic bir isim değilse template adımız girmek zorundayız.) Son olarak da reverse_lazy ile bizi yönlendireceği link'in ismini giriyoruz ve url pattern'e ekliyoruz.
 
+# Code
+'''py
+from django.views.generic.edit import DeleteView
 
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'fscohort/student_delete.html'
+    success_url = reverse_lazy('list')
+
+from .views import StudentDeleteView
+urlpatterns = [
+        path('delete/<int:pk>/', StudentDeleteView.as_view(), name="delete"),
+]
+'''  
 
 
 
