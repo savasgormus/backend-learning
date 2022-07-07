@@ -107,12 +107,13 @@ from django.db import models
 # Create your models here.
 
 class Student(models.Model):
-    first_name : models.CharField(max_length=30)
-    last_name : models.CharField(max_length=30)
-    number : models.IntegerField(blank=True, null=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    number = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f"{self.first_name} {self.last_name}"
+
     
     class Meta:
         verbose_name_plural = 'Öğrenciler'
@@ -146,7 +147,7 @@ def student_list(request):
 render'ın ikinci parametresi olan student_list.html dosyasını template klasöründe oluşturacağız.
 
 - fscohort/templates/fscohort/student_list.html
-html dosyamızı oluşturduk. ilk işimiz base.html'i extend etmek olacak. daha sonra bir block oluşturacağız. block ismi base.html'de verdiğimiz isimle aynı olmak zorunda(container). block içerisinde görmek istediğimiz contexti yazıyoruz: {{ student }}
+html dosyamızı oluşturduk. ilk işimiz base.html'i extend etmek olacak. daha sonra bir block oluşturacağız. block ismi base.html'de verdiğimiz isimle aynı olmak zorunda(container). block içerisinde görmek istediğimiz contexti yazıyoruz: {{ students }}
 
 - fscohort/urls.py
 template'imizi görebilmemiz için buna bir path oluşturmamız lazım. views'den student_list'i import edip urlpatterns içerisine bu path'i 'list/' linki ve 'list' ismi ile ekledik.
@@ -274,10 +275,15 @@ StudentForm'dan gelecek spesifik veriyi belirtmek için yani değişikliği yapa
 def student_update(request, id):
     student = Student.objects.get(id=id)
     form = StudentForm(instance=student)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)  
+        if form.is_valid():
+            form.save()
+            return redirect('list')
     context = {
-        'form': form
+        'form' : form
     }
-    return render(request, 'fscohort/student_update.html',context) 
+    return render(request, 'fscohort/student_update.html', context)
 -->
 
 - fscohort/templates/fscohort/student_update.html:
@@ -290,7 +296,7 @@ csrf_token, context içinde görmek istediğimiz veri(views.py'da 'form' ismini 
 
 {% block container %}
 <h2>Student Update</h2>
-<form action="">
+<form action="" method="POST">
     {% csrf_token %}
     {{form.as_p}}
     <input type="submit" value="Update">
