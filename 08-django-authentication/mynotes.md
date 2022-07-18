@@ -157,7 +157,84 @@ def register(request):
 ```
 
 
-2.10
+ - Password change işlemi yapacağız. djangonun bizim için hazırladığı PasswordChangeView'i import edeceğiz. bu view class-based bir view olduğu için urls.py'da url pattern'e eklerken .as_view() fonksiyonu ile yazmamız gerekiyor. yine class-based view olduğu için bir view yazmamıza gerek yok. direkt urls.py'a import ederek kullanacağız. import kısmı biraz daha farklı. aşağıda göreceğiz:
+
+ ```py
+ - urls.py
+from django.contrib.auth import views as auth_views
+
+urlpatterns = [
+   path('change-password/', auth_views.PasswordChangeView.as_view(template_name='registration/change-password.html'), name="change-password"),
+]
+ ```
+
+- basit bir template hazırladık. yine kullandığımız form djangonun otomatik oluşturduğu bir change password formu olarak bize gelecek.
+
+```html
+<h2>Password change page</h2>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Change Password">
+</form>
+```
+
+- şifre değiştirdikten sonra yine bizi admin panelin şifre değiştirme sayfasına benzer bir sayfaya yönlendirecek. eğer istersek bunu da override edebiliriz. auth_views.PasswordChangeDoneView.as_view() içerisine template_name yazıp yeni bir template oluşturarak bunu yapabiliriz.
+
+- Password reset işlemi yapacağız:
+- bu işlem 4 sayfayı içeriyor. reset isteği, e mail gönderme, e mail'e tıklayınca açacağımız sayfa ve reset işlemi.
+- yine class-based view'ımızı urls.py'a ekliyoruz. yukarıdaki işlemde auth_views'ı import ettiğimiz için tekrar bişey import etmemize gerek yok.
+
+```py
+urlpatterns = [
+path('reset-password/', auth_views.PasswordResetView.as_view(template_name='registration/reset-password.html'), name="reset-password"),
+]
+```
+
+- şu haliyle password reset işlemi yapamayız. ConnectionRefusedError at /reset-password/ diye bir hata alacağız. çünkü mail-backend'i oluşturacağız.
+- consele back'endi oluşturmak için settings.py'a şunu ekleyeceğiz:
+```py
+- settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.consele.EmailBackend'
+```
+
+- bu işlemi yaptıktan sonra reset için e mail gönderdiğimizde terminalimizde bir e posta gönderisi alacağız. şu an console e mail backendimizi kurmuş olduk.
+- bu email'de bize bir link verecek ve bu linke tıkladığımızda bizi password reset'in diğer adımı olan yeni şifre girme sayfasına yönlendirecek. şifremizi burada değiştirdiğimizde de reset/done yani sonuncu aşamaya gönderecek.
+- yine bu sayfalar admin paneli sayfası gibi görüntülenecek. hazır class-based viewslerle yukarıdaki örneklerde olduğu gibi modifiye edebiliriz.
+
+- logout işlemi de login işlemi gibi istediğimiz şekilde redirect edebiliriz. settings.py'a ekleyeceğimiz satır ile belirttiğimiz sayfaya geçiş yapacaktır.
+
+```py
+- settings.py
+LOGOUT_REDIRECT_URL = 'home'
+```
+
+
+- Login required decorator
+
+- bu işlemin amacı belirli bir sayfayı sadece login olmuş kullanıcıların görmesini sağlamak. view'imize bu decorator'ı import edeceğiz ve decorator kullanacağımız view'in üstüne @login_required yazacağız:
+
+```py
+- views.py
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def special(request):  
+    return render(request, "user_example/special.html")
+```
+
+- kodumuzu bu şekilde düzenledikten sonra bahsi geçen sayfaya girmek istediğimizde eğer login olmadıysak bizi login sayfasına yönlendirecek.
+
+
+
+
+
+
+
+
 
 
 

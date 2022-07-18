@@ -1,12 +1,13 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 
 def home_view(request):    
     return render(request, "user_example/home.html")
 
-
-def special(request):    
+@login_required
+def special(request):  
     return render(request, "user_example/special.html")
 
 def register(request):
