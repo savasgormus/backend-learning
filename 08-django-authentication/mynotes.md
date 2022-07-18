@@ -227,16 +227,3 @@ def special(request):
 ```
 
 - kodumuzu bu şekilde düzenledikten sonra bahsi geçen sayfaya girmek istediğimizde eğer login olmadıysak bizi login sayfasına yönlendirecek.
-
-
-
-
-
-
-
-
-
-
-
-
-
